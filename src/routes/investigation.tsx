@@ -197,6 +197,8 @@ function InvestigationPage() {
       if (id === "report") {
         setVerdict(findings);
         setLog((l) => [...l, { kind: "verdict", text: String((findings.executive_summary as string) ?? ""), ts }]);
+        // Persist for signed-in analysts (RLS scopes to their user_id)
+        void persistInvestigation(findings);
       }
     } else if (ev.type === "agent_message") {
       setLog((l) => [...l, { kind: "message", from: String(ev.from), to: String(ev.to), text: String(ev.text), ts }]);
