@@ -123,7 +123,7 @@ function InvestigationPage() {
       agent_log: logRef.current,
       duration_ms: Date.now() - startTimeRef.current,
     };
-    const { data, error } = await supabase.from("investigations").insert(payload).select("id").single();
+    const { data, error } = await supabase.from("investigations").insert(payload as never).select("id").single();
     if (!error && data) setSaved({ id: data.id });
   }
 
