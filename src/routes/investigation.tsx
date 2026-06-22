@@ -82,12 +82,49 @@ function InvestigationPage() {
   const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [verdict, setVerdict] = useState<Record<string, unknown> | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
+  const [saved, setSaved] = useState<{ id: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
+  const logRef = useRef<LogEntry[]>([]);
+
+  useEffect(() => { agentsRef.current = agents; }, [agents]);
+  useEffect(() => { logRef.current = log; }, [log]);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   function reset() {
     setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined })));
     setLog([]);
     setVerdict(null);
+    setSaved(null);
+  }
+
+  async function persistInvestigation(verdictData: Record<string, unknown>) {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return;
+    const agentFindings: Record<string, unknown> = {};
+    for (const a of agentsRef.current) {
+      if (a.findings) agentFindings[a.id] = a.findings;
+    }
+    const payload = {
+      user_id: u.user.id,
+      indicator,
+      kind,
+      verdict: String(verdictData.verdict ?? "unknown"),
+      severity: String(verdictData.severity ?? agentFindings.risk && (agentFindings.risk as Record<string, unknown>).final_severity ?? "info"),
+      confidence: Number(verdictData.confidence ?? 0.7),
+      executive_summary: String(verdictData.executive_summary ?? ""),
+      findings: { ...verdictData, agents: agentFindings },
+      agent_log: logRef.current,
+      duration_ms: Date.now() - startTimeRef.current,
+    };
+    const { data, error } = await supabase.from("investigations").insert(payload).select("id").single();
+    if (!error && data) setSaved({ id: data.id });
   }
 
   async function start() {
