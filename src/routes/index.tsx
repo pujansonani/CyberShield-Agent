@@ -38,6 +38,7 @@ function Nav() {
           </a>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#architecture" className="hover:text-foreground transition">Architecture</a>
+            <a href="#agents" className="hover:text-foreground transition">Agents</a>
             <a href="#workflow" className="hover:text-foreground transition">Workflow</a>
             <a href="#collab" className="hover:text-foreground transition">Collaboration</a>
             <a href="#features" className="hover:text-foreground transition">Features</a>
