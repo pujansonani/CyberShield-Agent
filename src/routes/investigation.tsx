@@ -116,7 +116,7 @@ function InvestigationPage() {
       indicator,
       kind,
       verdict: String(verdictData.verdict ?? "unknown"),
-      severity: String(verdictData.severity ?? (agentFindings.risk && (agentFindings.risk as Record<string, unknown>).final_severity) ?? "info"),
+      severity: String(verdictData.severity ?? (agentFindings.risk ? (agentFindings.risk as Record<string, unknown>).final_severity : undefined) ?? "info"),
       confidence: Number(verdictData.confidence ?? 0.7),
       executive_summary: String(verdictData.executive_summary ?? ""),
       findings: { ...verdictData, agents: agentFindings },
