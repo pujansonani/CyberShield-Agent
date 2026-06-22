@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      investigations: {
+        Row: {
+          agent_log: Json
+          confidence: number | null
+          created_at: string
+          duration_ms: number | null
+          executive_summary: string | null
+          findings: Json
+          id: string
+          indicator: string
+          kind: string
+          severity: string | null
+          user_id: string
+          verdict: string | null
+        }
+        Insert: {
+          agent_log?: Json
+          confidence?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          executive_summary?: string | null
+          findings?: Json
+          id?: string
+          indicator: string
+          kind: string
+          severity?: string | null
+          user_id: string
+          verdict?: string | null
+        }
+        Update: {
+          agent_log?: Json
+          confidence?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          executive_summary?: string | null
+          findings?: Json
+          id?: string
+          indicator?: string
+          kind?: string
+          severity?: string | null
+          user_id?: string
+          verdict?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
