@@ -44,10 +44,13 @@ function Nav() {
             <a href="#features" className="hover:text-foreground transition">Features</a>
             <a href="#roadmap" className="hover:text-foreground transition">Roadmap</a>
           </nav>
-          <Link to="/investigation" className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium rounded-lg px-3.5 py-1.5"
-            style={{ background: "var(--gradient-primary)", color: "white", boxShadow: "var(--shadow-glow)" }}>
-            <PlayCircle className="size-3.5" /> Live Demo
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/history" className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground transition">History</Link>
+            <Link to="/investigation" className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium rounded-lg px-3.5 py-1.5"
+              style={{ background: "var(--gradient-primary)", color: "white", boxShadow: "var(--shadow-glow)" }}>
+              <PlayCircle className="size-3.5" /> Live Demo
+            </Link>
+          </div>
         </div>
       </div>
     </header>
