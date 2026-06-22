@@ -356,26 +356,105 @@ function Features() {
   );
 }
 
+function Agents() {
+  const agents = [
+    { icon: Radar, t: "Threat Detection Agent", role: "Detection", d: "Analyzes suspicious emails, phishing attempts, malicious URLs, and attachments. Computes a preliminary risk score.", out: ["Threat indicators", "Initial severity score", "Investigation trigger"], color: "var(--cyber-cyan)" },
+    { icon: Eye, t: "Threat Intelligence Agent", role: "Intel", d: "Queries external feeds, IOC databases, and reputation services to enrich and validate threat indicators.", out: ["Reputation score", "Intel summary", "Attack associations"], color: "var(--cyber-blue)" },
+    { icon: Bug, t: "Malware Analysis Agent", role: "Analysis", d: "Inspects suspicious files, surfaces ransomware indicators, and evaluates behavioral execution risks.", out: ["Malware class", "Behavior report", "Risk assessment"], color: "var(--cyber-purple)" },
+    { icon: ShieldAlert, t: "Incident Response Agent", role: "Response", d: "Crafts containment strategies, prioritizes response actions, and develops tailored incident playbooks.", out: ["Recommendations", "Handling plan", "Containment steps"], color: "var(--cyber-pink)" },
+    { icon: FileCheck2, t: "Compliance Agent", role: "Governance", d: "Maps findings to ISO 27001, NIST, GDPR, and SOC 2. Generates audit trails and explainability records.", out: ["Compliance report", "Audit trail", "Governance notes"], color: "var(--cyber-purple)" },
+    { icon: ShieldCheck, t: "Reporting Agent", role: "Reporting", d: "Consolidates every agent's output into executive summaries and technical forensic documentation.", out: ["Executive report", "Technical report", "Incident docs"], color: "var(--cyber-blue)" },
+    { icon: Brain, t: "Orchestrator Agent", role: "Coordination", d: "Routes tasks, resolves agent conflicts, and ensures workflow completion across the collaborative mesh.", out: ["Task delegation", "Conflict resolution", "Final verdict"], color: "var(--cyber-cyan)" },
+  ];
+  return (
+    <section id="agents" className="relative py-32 px-6">
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading
+          tag="The Agents"
+          title={<>Six specialists, <span className="text-gradient">one orchestrator</span></>}
+          sub="Each agent owns a discipline of the SOC and collaborates through a shared reasoning fabric."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {agents.map((a, i) => (
+            <div key={a.t} className={`group glass-strong rounded-2xl p-6 glow-border hover:-translate-y-1 transition-all duration-500 ${i === 6 ? "lg:col-start-2" : ""}`}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="size-11 rounded-xl glass flex items-center justify-center" style={{ color: a.color }}>
+                  <a.icon className="size-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Agent {String(i + 1).padStart(2, "0")} · {a.role}</div>
+                  <div className="text-sm font-semibold">{a.t}</div>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{a.d}</p>
+              <div className="mt-4 pt-4 border-t border-white/5">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">Outputs</div>
+                <ul className="space-y-1">
+                  {a.out.map(o => (
+                    <li key={o} className="text-xs flex items-center gap-2"><span className="size-1 rounded-full" style={{ background: a.color }} />{o}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Innovation() {
+  const points = [
+    { icon: Network, t: "Collaborative Reasoning", d: "Agents negotiate evidence and converge on verdicts instead of working in silos." },
+    { icon: Brain, t: "Autonomous Decision-Making", d: "End-to-end investigation without analyst handoffs — from signal to assessment." },
+    { icon: Eye, t: "Explainable by Design", d: "Every conclusion ships with the reasoning trace and supporting evidence." },
+    { icon: ShieldCheck, t: "SOC-Mirrored Architecture", d: "Mirrors how real Security Operations Centers triage, escalate, and resolve incidents." },
+  ];
+  return (
+    <section className="relative py-32 px-6">
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading
+          tag="What's New"
+          title={<>Why CyberShield AI is <span className="text-gradient">different</span></>}
+          sub="Traditional tools detect. CyberShield AI investigates, reasons, and resolves — collaboratively."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {points.map((p, i) => (
+            <div key={p.t} className="glass-strong rounded-2xl p-6 glow-border">
+              <div className="size-10 rounded-lg glass flex items-center justify-center mb-4" style={{ color: i % 2 ? "var(--cyber-purple)" : "var(--cyber-cyan)" }}>
+                <p.icon className="size-5" />
+              </div>
+              <div className="text-sm font-semibold">{p.t}</div>
+              <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{p.d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TechStack() {
   const groups = [
-    { label: "Frontend", icon: Code2, items: ["Next.js", "Tailwind CSS"] },
+    { label: "Frontend", icon: Code2, items: ["Next.js", "React", "Tailwind CSS", "ShadCN UI"] },
     { label: "Backend", icon: Cloud, items: ["FastAPI", "Python 3.12"] },
-    { label: "AI Framework", icon: Brain, items: ["LangGraph", "OpenAI Agents SDK"] },
-    { label: "Database", icon: Database, items: ["PostgreSQL", "ChromaDB (Vector)"] },
-    { label: "Integrations", icon: Network, items: ["VirusTotal API", "AbuseIPDB API"] },
+    { label: "Agent Framework", icon: Brain, items: ["LangGraph", "OpenAI Agents SDK"] },
+    { label: "Data Layer", icon: Database, items: ["PostgreSQL", "ChromaDB (Vector)"] },
+    { label: "Threat Intel", icon: Network, items: ["VirusTotal API", "AbuseIPDB API", "OSINT Feeds"] },
+    { label: "Deployment", icon: Cloud, items: ["Vercel", "Railway", "Docker"] },
   ];
   return (
     <section className="relative py-32 px-6">
       <div className="max-w-6xl mx-auto">
         <SectionHeading tag="Technology Stack" title={<>Engineered with <span className="text-gradient">modern primitives</span></>} />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {groups.map(g => (
             <div key={g.label} className="glass-strong rounded-2xl p-5 glow-border">
               <div className="size-9 rounded-lg glass flex items-center justify-center mb-4" style={{ color: "var(--cyber-cyan)" }}>
                 <g.icon className="size-4" />
               </div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{g.label}</div>
-              <ul className="mt-2 space-y-1.5">
+              <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">
                 {g.items.map(i => (
                   <li key={i} className="text-sm flex items-center gap-2"><span className="size-1 rounded-full" style={{ background: "var(--cyber-cyan)" }} />{i}</li>
                 ))}
