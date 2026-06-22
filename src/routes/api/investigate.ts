@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { generateText } from "ai";
-import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+
+type Body = {
   indicator: string;
   kind: "email" | "url" | "domain" | "ip" | "file";
   context?: string;
