@@ -94,10 +94,10 @@ function Hero() {
         {/* metric chips */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto animate-fade-up" style={{ animationDelay: ".5s" }}>
           {[
-            { v: "6", l: "Specialized Agents" },
+            { v: "6+1", l: "Agents + Orchestrator" },
             { v: "<10s", l: "Investigation Time" },
+            { v: "70%", l: "Faster Response" },
             { v: "24/7", l: "Autonomous Defense" },
-            { v: "98%", l: "Detection Accuracy" },
           ].map(m => (
             <div key={m.l} className="glass rounded-xl px-4 py-3 text-center">
               <div className="text-2xl font-display font-bold text-gradient">{m.v}</div>
