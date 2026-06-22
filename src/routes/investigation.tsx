@@ -367,11 +367,29 @@ function InvestigationPage() {
                     <div className="size-10 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
                       <Shield className="size-5 text-white" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">Final Verdict</p>
                       <h2 className="text-2xl font-display font-bold capitalize">{String(verdict.verdict)}</h2>
                     </div>
+                    <button
+                      onClick={() => exportInvestigationPdf({
+                        indicator, kind,
+                        verdict: String(verdict.verdict ?? "unknown"),
+                        severity: String((agents.find((a) => a.id === "risk")?.findings as Record<string, unknown> | undefined)?.final_severity ?? "info"),
+                        confidence: Number(verdict.confidence ?? 0.7),
+                        executive_summary: String(verdict.executive_summary ?? ""),
+                        findings: { ...verdict, agents: Object.fromEntries(agents.filter((a) => a.findings).map((a) => [a.id, a.findings])) },
+                        duration_ms: Date.now() - startTimeRef.current,
+                        created_at: new Date().toISOString(),
+                      })}
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-white/5 border border-white/10 hover:bg-white/10 transition"
+                    >
+                      <Download className="size-3.5" /> Export PDF
+                    </button>
                   </div>
+                  {saved && (
+                    <p className="text-[11px] font-mono text-emerald-300 mb-2">✓ Saved to your investigation history</p>
+                  )}
                   <p className="text-sm text-foreground/90 leading-relaxed">{String(verdict.executive_summary ?? "")}</p>
 
                   {Array.isArray(verdict.ioc_list) && verdict.ioc_list.length > 0 && (
