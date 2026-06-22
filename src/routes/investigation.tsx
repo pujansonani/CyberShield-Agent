@@ -222,9 +222,20 @@ function InvestigationPage() {
               </div>
               <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
             </Link>
-            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
-              <ArrowLeft className="size-4" /> Back to overview
-            </Link>
+            <div className="flex items-center gap-4">
+              {signedIn ? (
+                <Link to="/history" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                  <History className="size-4" /> History
+                </Link>
+              ) : (
+                <Link to="/auth" search={{ redirect: "/investigation" }} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                  <LogIn className="size-4" /> Sign in to save
+                </Link>
+              )}
+              <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                <ArrowLeft className="size-4" /> Overview
+              </Link>
+            </div>
           </div>
         </div>
       </header>
