@@ -599,8 +599,10 @@ function Landing() {
         <Hero />
         <Problem />
         <Architecture />
+        <Agents />
         <WorkflowSection />
         <Collaboration />
+        <Innovation />
         <Features />
         <TechStack />
         <Impact />
