@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Shield, ArrowLeft, Send, Loader2, CheckCircle2, AlertTriangle,
   Radar, Eye, Bug, Gauge, FileCheck2, FileText, Brain, Sparkles,
+  Download, History, LogIn,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { exportInvestigationPdf } from "@/lib/pdf-report";
 
 export const Route = createFileRoute("/investigation")({
   head: () => ({
@@ -79,18 +82,56 @@ function InvestigationPage() {
   const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [verdict, setVerdict] = useState<Record<string, unknown> | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
+  const [saved, setSaved] = useState<{ id: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
+  const logRef = useRef<LogEntry[]>([]);
+
+  useEffect(() => { agentsRef.current = agents; }, [agents]);
+  useEffect(() => { logRef.current = log; }, [log]);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   function reset() {
     setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined })));
     setLog([]);
     setVerdict(null);
+    setSaved(null);
+  }
+
+  async function persistInvestigation(verdictData: Record<string, unknown>) {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return;
+    const agentFindings: Record<string, unknown> = {};
+    for (const a of agentsRef.current) {
+      if (a.findings) agentFindings[a.id] = a.findings;
+    }
+    const payload = {
+      user_id: u.user.id,
+      indicator,
+      kind,
+      verdict: String(verdictData.verdict ?? "unknown"),
+      severity: String(verdictData.severity ?? agentFindings.risk && (agentFindings.risk as Record<string, unknown>).final_severity ?? "info"),
+      confidence: Number(verdictData.confidence ?? 0.7),
+      executive_summary: String(verdictData.executive_summary ?? ""),
+      findings: { ...verdictData, agents: agentFindings },
+      agent_log: logRef.current,
+      duration_ms: Date.now() - startTimeRef.current,
+    };
+    const { data, error } = await supabase.from("investigations").insert(payload as never).select("id").single();
+    if (!error && data) setSaved({ id: data.id });
   }
 
   async function start() {
     if (running || !indicator.trim()) return;
     reset();
     setRunning(true);
+    startTimeRef.current = Date.now();
     const ac = new AbortController();
     abortRef.current = ac;
 
@@ -156,6 +197,8 @@ function InvestigationPage() {
       if (id === "report") {
         setVerdict(findings);
         setLog((l) => [...l, { kind: "verdict", text: String((findings.executive_summary as string) ?? ""), ts }]);
+        // Persist for signed-in analysts (RLS scopes to their user_id)
+        void persistInvestigation(findings);
       }
     } else if (ev.type === "agent_message") {
       setLog((l) => [...l, { kind: "message", from: String(ev.from), to: String(ev.to), text: String(ev.text), ts }]);
@@ -179,9 +222,20 @@ function InvestigationPage() {
               </div>
               <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
             </Link>
-            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
-              <ArrowLeft className="size-4" /> Back to overview
-            </Link>
+            <div className="flex items-center gap-4">
+              {signedIn ? (
+                <Link to="/history" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                  <History className="size-4" /> History
+                </Link>
+              ) : (
+                <Link to="/auth" search={{ redirect: "/investigation" }} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                  <LogIn className="size-4" /> Sign in to save
+                </Link>
+              )}
+              <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition">
+                <ArrowLeft className="size-4" /> Overview
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -313,11 +367,29 @@ function InvestigationPage() {
                     <div className="size-10 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
                       <Shield className="size-5 text-white" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">Final Verdict</p>
                       <h2 className="text-2xl font-display font-bold capitalize">{String(verdict.verdict)}</h2>
                     </div>
+                    <button
+                      onClick={() => exportInvestigationPdf({
+                        indicator, kind,
+                        verdict: String(verdict.verdict ?? "unknown"),
+                        severity: String((agents.find((a) => a.id === "risk")?.findings as Record<string, unknown> | undefined)?.final_severity ?? "info"),
+                        confidence: Number(verdict.confidence ?? 0.7),
+                        executive_summary: String(verdict.executive_summary ?? ""),
+                        findings: { ...verdict, agents: Object.fromEntries(agents.filter((a) => a.findings).map((a) => [a.id, a.findings])) },
+                        duration_ms: Date.now() - startTimeRef.current,
+                        created_at: new Date().toISOString(),
+                      })}
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-white/5 border border-white/10 hover:bg-white/10 transition"
+                    >
+                      <Download className="size-3.5" /> Export PDF
+                    </button>
                   </div>
+                  {saved && (
+                    <p className="text-[11px] font-mono text-emerald-300 mb-2">✓ Saved to your investigation history</p>
+                  )}
                   <p className="text-sm text-foreground/90 leading-relaxed">{String(verdict.executive_summary ?? "")}</p>
 
                   {Array.isArray(verdict.ioc_list) && verdict.ioc_list.length > 0 && (
