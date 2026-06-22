@@ -1,10 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Shield, ArrowRight, Activity, AlertTriangle, Clock, Users,
   Brain, Network, Eye, Radar, Bug, FileCheck2, Gauge, Zap,
   Code2, Database, Cloud, Sparkles, ChevronRight, CheckCircle2,
-  ArrowDown, Workflow as WorkflowIcon, ShieldCheck, ShieldAlert,
+  ArrowDown, Workflow as WorkflowIcon, ShieldCheck, ShieldAlert, PlayCircle,
 } from "lucide-react";
 import { ParticleField } from "@/components/ParticleField";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
@@ -44,10 +44,10 @@ function Nav() {
             <a href="#features" className="hover:text-foreground transition">Features</a>
             <a href="#roadmap" className="hover:text-foreground transition">Roadmap</a>
           </nav>
-          <a href="#architecture" className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium rounded-lg px-3.5 py-1.5"
+          <Link to="/investigation" className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium rounded-lg px-3.5 py-1.5"
             style={{ background: "var(--gradient-primary)", color: "white", boxShadow: "var(--shadow-glow)" }}>
-            View Demo <ArrowRight className="size-3.5" />
-          </a>
+            <PlayCircle className="size-3.5" /> Live Demo
+          </Link>
         </div>
       </div>
     </header>
