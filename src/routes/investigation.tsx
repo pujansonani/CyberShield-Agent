@@ -131,6 +131,7 @@ function InvestigationPage() {
     if (running || !indicator.trim()) return;
     reset();
     setRunning(true);
+    startTimeRef.current = Date.now();
     const ac = new AbortController();
     abortRef.current = ac;
 
