@@ -87,7 +87,7 @@ function Hero() {
             <ArrowRight className="size-4 group-hover:translate-x-1 transition" />
           </a>
           <a href="#workflow" className="group inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium glass-strong glow-border hover:bg-white/5 transition">
-            <Workflow className="size-4 text-cyber-cyan" style={{ color: "var(--cyber-cyan)" }} /> Explore Workflow
+            <WorkflowIcon className="size-4 text-cyber-cyan" style={{ color: "var(--cyber-cyan)" }} /> Explore Workflow
           </a>
         </div>
 
@@ -200,7 +200,7 @@ function Architecture() {
   );
 }
 
-function Workflow() {
+function WorkflowSection() {
   const steps = [
     { t: "Input Received", d: "User uploads a suspicious email, URL, or file artifact.", icon: Sparkles },
     { t: "Threat Detection Agent", d: "Classifies signal — phishing, malware, suspicious URL.", icon: Radar },
@@ -519,7 +519,7 @@ function Landing() {
         <Hero />
         <Problem />
         <Architecture />
-        <Workflow />
+        <WorkflowSection />
         <Collaboration />
         <Features />
         <TechStack />
@@ -532,7 +532,3 @@ function Landing() {
   );
 }
 
-// missing icon import shim
-function ShieldAlert(props: React.SVGProps<SVGSVGElement>) {
-  return <AlertTriangle {...props} />;
-}
