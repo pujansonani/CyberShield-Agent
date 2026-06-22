@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Shield, ArrowLeft, Send, Loader2, CheckCircle2, AlertTriangle,
   Radar, Eye, Bug, Gauge, FileCheck2, FileText, Brain, Sparkles,
+  Download, History, LogIn,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { exportInvestigationPdf } from "@/lib/pdf-report";
 
 export const Route = createFileRoute("/investigation")({
   head: () => ({
