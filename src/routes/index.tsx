@@ -4,7 +4,7 @@ import {
   Shield, ArrowRight, Activity, AlertTriangle, Clock, Users,
   Brain, Network, Eye, Radar, Bug, FileCheck2, Gauge, Zap,
   Code2, Database, Cloud, Sparkles, ChevronRight, CheckCircle2,
-  ArrowDown, Workflow, ShieldCheck,
+  ArrowDown, Workflow as WorkflowIcon, ShieldCheck, ShieldAlert,
 } from "lucide-react";
 import { ParticleField } from "@/components/ParticleField";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
