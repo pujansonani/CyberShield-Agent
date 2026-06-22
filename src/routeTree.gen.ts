@@ -9,38 +9,65 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as InvestigationRouteImport } from './routes/investigation'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiInvestigateRouteImport } from './routes/api/investigate'
 
+const InvestigationRoute = InvestigationRouteImport.update({
+  id: '/investigation',
+  path: '/investigation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInvestigateRoute = ApiInvestigateRouteImport.update({
+  id: '/api/investigate',
+  path: '/api/investigate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/investigation': typeof InvestigationRoute
+  '/api/investigate': typeof ApiInvestigateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/investigation': typeof InvestigationRoute
+  '/api/investigate': typeof ApiInvestigateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/investigation': typeof InvestigationRoute
+  '/api/investigate': typeof ApiInvestigateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/investigation' | '/api/investigate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/investigation' | '/api/investigate'
+  id: '__root__' | '/' | '/investigation' | '/api/investigate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InvestigationRoute: typeof InvestigationRoute
+  ApiInvestigateRoute: typeof ApiInvestigateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/investigation': {
+      id: '/investigation'
+      path: '/investigation'
+      fullPath: '/investigation'
+      preLoaderRoute: typeof InvestigationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/investigate': {
+      id: '/api/investigate'
+      path: '/api/investigate'
+      fullPath: '/api/investigate'
+      preLoaderRoute: typeof ApiInvestigateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InvestigationRoute: InvestigationRoute,
+  ApiInvestigateRoute: ApiInvestigateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
