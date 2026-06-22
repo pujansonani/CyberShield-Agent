@@ -14,7 +14,7 @@ type AgentDef = {
   role: string;
   color: string;
   systemPrompt: string;
-  schema: z.ZodTypeAny;
+  jsonShape: string;
 };
 
 const AGENTS: AgentDef[] = [
@@ -24,14 +24,14 @@ const AGENTS: AgentDef[] = [
     role: "Surface-level threat indicators",
     color: "cyan",
     systemPrompt:
-      "You are the Threat Detection Agent in an autonomous SOC. Inspect the indicator for phishing language, suspicious patterns, header anomalies, lookalike domains, and obvious IoCs. Be terse, technical, and confident. Output strict JSON.",
-    schema: z.object({
-      indicators: z.array(z.string()).max(6),
-      patterns_observed: z.array(z.string()).max(5),
-      initial_severity: z.enum(["info", "low", "medium", "high", "critical"]),
-      confidence: z.number().min(0).max(1),
-      reasoning: z.string().max(400),
-    }),
+      "You are the Threat Detection Agent in an autonomous SOC. Inspect the indicator for phishing language, suspicious patterns, header anomalies, lookalike domains, and obvious IoCs. Be terse, technical, and confident.",
+    jsonShape: `{
+  "indicators": [string],          // up to 6 specific IoCs you spotted
+  "patterns_observed": [string],   // up to 5 phishing/social-eng patterns
+  "initial_severity": "info"|"low"|"medium"|"high"|"critical",
+  "confidence": number,            // 0..1
+  "reasoning": string              // <= 300 chars
+}`,
   },
   {
     id: "intel",
@@ -39,14 +39,14 @@ const AGENTS: AgentDef[] = [
     role: "Reputation & external intel",
     color: "violet",
     systemPrompt:
-      "You are the Threat Intelligence Agent. Based on the indicator type, infer what VirusTotal / AbuseIPDB / WHOIS would likely surface (domain age, hosting ASN, prior abuse reports, known TTP overlap). Be plausible and specific. Output strict JSON.",
-    schema: z.object({
-      reputation_score: z.number().min(0).max(100),
-      known_threat_actor: z.string().max(80),
-      ttp_overlap: z.array(z.string()).max(5),
-      sources_cited: z.array(z.string()).max(4),
-      reasoning: z.string().max(400),
-    }),
+      "You are the Threat Intelligence Agent. Based on the indicator type, infer what VirusTotal / AbuseIPDB / WHOIS would plausibly surface (domain age, hosting ASN, prior abuse reports, known TTP overlap). Be plausible and specific.",
+    jsonShape: `{
+  "reputation_score": number,      // 0..100, lower = worse
+  "known_threat_actor": string,    // or "Unknown"
+  "ttp_overlap": [string],         // up to 5 MITRE ATT&CK TTPs
+  "sources_cited": [string],       // e.g. ["VirusTotal","AbuseIPDB","WHOIS"]
+  "reasoning": string
+}`,
   },
   {
     id: "malware",
@@ -54,15 +54,15 @@ const AGENTS: AgentDef[] = [
     role: "Payload & behavior analysis",
     color: "rose",
     systemPrompt:
-      "You are the Malware Analysis Agent. If the indicator could deliver a payload, hypothesize family, behavior, persistence, and C2. If clearly no payload, say so and lower risk. Output strict JSON.",
-    schema: z.object({
-      payload_present: z.boolean(),
-      suspected_family: z.string().max(60),
-      behaviors: z.array(z.string()).max(5),
-      mitre_techniques: z.array(z.string()).max(5),
-      risk_score: z.number().min(0).max(100),
-      reasoning: z.string().max(400),
-    }),
+      "You are the Malware Analysis Agent. If the indicator could deliver a payload, hypothesize family, behavior, persistence, and C2. If clearly no payload, say so and lower risk.",
+    jsonShape: `{
+  "payload_present": boolean,
+  "suspected_family": string,
+  "behaviors": [string],
+  "mitre_techniques": [string],    // e.g. ["T1566.002","T1059.001"]
+  "risk_score": number,            // 0..100
+  "reasoning": string
+}`,
   },
   {
     id: "risk",
@@ -70,14 +70,14 @@ const AGENTS: AgentDef[] = [
     role: "Aggregate severity & impact",
     color: "amber",
     systemPrompt:
-      "You are the Risk Assessment Agent. You have findings from Detection, Intelligence, and Malware agents. Reconcile them, weigh confidence, and produce a unified risk picture for the business. Output strict JSON.",
-    schema: z.object({
-      overall_risk: z.enum(["info", "low", "medium", "high", "critical"]),
-      threat_score: z.number().min(0).max(100),
-      business_impact: z.string().max(300),
-      affected_assets: z.array(z.string()).max(5),
-      reasoning: z.string().max(400),
-    }),
+      "You are the Risk Assessment Agent. You have findings from Detection, Intelligence, and Malware agents. Reconcile them, weigh confidence, and produce a unified risk picture for the business.",
+    jsonShape: `{
+  "overall_risk": "info"|"low"|"medium"|"high"|"critical",
+  "threat_score": number,          // 0..100
+  "business_impact": string,
+  "affected_assets": [string],
+  "reasoning": string
+}`,
   },
   {
     id: "compliance",
@@ -85,15 +85,15 @@ const AGENTS: AgentDef[] = [
     role: "Regulatory mapping",
     color: "emerald",
     systemPrompt:
-      "You are the Compliance Agent. Map the threat to GDPR, ISO 27001, NIST CSF, and SOC2 controls. List relevant clauses/controls and any notification obligations. Output strict JSON.",
-    schema: z.object({
-      gdpr_impact: z.string().max(200),
-      iso_27001_controls: z.array(z.string()).max(5),
-      nist_csf_functions: z.array(z.string()).max(5),
-      soc2_criteria: z.array(z.string()).max(5),
-      notification_required: z.boolean(),
-      reasoning: z.string().max(300),
-    }),
+      "You are the Compliance Agent. Map the threat to GDPR, ISO 27001, NIST CSF, and SOC2 controls. List relevant clauses/controls and any notification obligations.",
+    jsonShape: `{
+  "gdpr_impact": string,
+  "iso_27001_controls": [string],
+  "nist_csf_functions": [string],  // Identify/Protect/Detect/Respond/Recover
+  "soc2_criteria": [string],
+  "notification_required": boolean,
+  "reasoning": string
+}`,
   },
   {
     id: "report",
@@ -101,19 +101,27 @@ const AGENTS: AgentDef[] = [
     role: "Executive synthesis",
     color: "sky",
     systemPrompt:
-      "You are the Report Generation Agent. Synthesize all prior agent findings into an executive verdict, indicators of compromise list, and prioritized remediation steps. Output strict JSON.",
-    schema: z.object({
-      executive_summary: z.string().max(500),
-      verdict: z.enum(["benign", "suspicious", "malicious"]),
-      ioc_list: z.array(z.string()).max(8),
-      remediation_steps: z.array(z.string()).max(6),
-      confidence: z.number().min(0).max(1),
-    }),
+      "You are the Report Generation Agent. Synthesize all prior agent findings into an executive verdict, indicators of compromise list, and prioritized remediation steps.",
+    jsonShape: `{
+  "verdict": "benign"|"suspicious"|"malicious",
+  "executive_summary": string,     // 2-3 sentences
+  "ioc_list": [string],
+  "remediation_steps": [string],   // up to 6, prioritized
+  "confidence": number             // 0..1
+}`,
   },
 ];
 
 function sse(controller: ReadableStreamDefaultController, event: object) {
   controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`));
+}
+
+function extractJson(text: string): unknown {
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const candidate = fenced ? fenced[1] : text;
+  const match = candidate.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("no JSON object found");
+  return JSON.parse(match[0]);
 }
 
 async function runInvestigation(body: Body, controller: ReadableStreamDefaultController) {
@@ -132,35 +140,43 @@ async function runInvestigation(body: Body, controller: ReadableStreamDefaultCon
   });
 
   const findings: Record<string, unknown> = {};
+  const order: string[] = [];
 
   for (const agent of AGENTS) {
-    sse(controller, { type: "agent_started", agentId: agent.id, name: agent.name, role: agent.role, color: agent.color });
+    sse(controller, {
+      type: "agent_started",
+      agentId: agent.id,
+      name: agent.name,
+      role: agent.role,
+      color: agent.color,
+    });
 
     const priorContext =
       Object.keys(findings).length > 0
-        ? `\n\nPrior agent findings (collaborate, do not contradict without reason):\n${JSON.stringify(findings, null, 2)}`
+        ? `\n\nPrior agent findings (collaborate; do not contradict without justification):\n${JSON.stringify(findings, null, 2)}`
         : "";
 
-    const userPrompt = `Investigation target:
+    const userPrompt = `INVESTIGATION TARGET
 - type: ${body.kind}
 - indicator: ${body.indicator}
-- analyst_context: ${body.context ?? "(none provided)"}
-${priorContext}`;
+- analyst_context: ${body.context ?? "(none)"}
+${priorContext}
+
+Return ONLY a single JSON object matching exactly this shape (no prose, no markdown):
+${agent.jsonShape}`;
 
     try {
       const { text } = await generateText({
         model,
         system: agent.systemPrompt,
         prompt: userPrompt,
-        experimental_output: Output.object({ schema: agent.schema }),
       });
 
-      let parsed: unknown;
+      let parsed: Record<string, unknown>;
       try {
-        parsed = JSON.parse(text);
+        parsed = extractJson(text) as Record<string, unknown>;
       } catch {
-        const match = text.match(/\{[\s\S]*\}/);
-        parsed = match ? JSON.parse(match[0]) : { reasoning: text };
+        parsed = { reasoning: text.slice(0, 400) };
       }
 
       findings[agent.id] = parsed;
@@ -172,15 +188,16 @@ ${priorContext}`;
         findings: parsed,
       });
 
-      const lastKey = Object.keys(findings).slice(-2, -1)[0];
-      if (lastKey) {
+      const prev = order[order.length - 1];
+      if (prev) {
         sse(controller, {
           type: "agent_message",
           from: agent.id,
-          to: lastKey,
-          text: `Acknowledged your findings. Incorporating into ${agent.id} analysis.`,
+          to: prev,
+          text: `Incorporated ${prev} findings into ${agent.id} analysis.`,
         });
       }
+      order.push(agent.id);
     } catch (err) {
       sse(controller, {
         type: "agent_error",
