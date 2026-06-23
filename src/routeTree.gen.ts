@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as InvestigationRouteImport } from './routes/investigation'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -16,6 +17,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiInvestigateRouteImport } from './routes/api/investigate'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvestigationRoute = InvestigationRouteImport.update({
   id: '/investigation',
   path: '/investigation',
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/investigation': typeof InvestigationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/api/investigate': typeof ApiInvestigateRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/investigation': typeof InvestigationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/api/investigate': typeof ApiInvestigateRoute
 }
@@ -66,20 +74,34 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/investigation': typeof InvestigationRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/api/investigate': typeof ApiInvestigateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/investigation' | '/history' | '/api/investigate'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/investigation'
+    | '/sitemap.xml'
+    | '/history'
+    | '/api/investigate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/investigation' | '/history' | '/api/investigate'
+  to:
+    | '/'
+    | '/auth'
+    | '/investigation'
+    | '/sitemap.xml'
+    | '/history'
+    | '/api/investigate'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/investigation'
+    | '/sitemap.xml'
     | '/_authenticated/history'
     | '/api/investigate'
   fileRoutesById: FileRoutesById
@@ -89,11 +111,19 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   InvestigationRoute: typeof InvestigationRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiInvestigateRoute: typeof ApiInvestigateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/investigation': {
       id: '/investigation'
       path: '/investigation'
@@ -155,6 +185,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   InvestigationRoute: InvestigationRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiInvestigateRoute: ApiInvestigateRoute,
 }
 export const routeTree = rootRouteImport
