@@ -9,7 +9,7 @@ import {
 import { ParticleField } from "@/components/ParticleField";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { Counter } from "@/components/Counter";
-import logoAsset from "@/assets/cyberguard-logo.png.asset.json";
+import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
