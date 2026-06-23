@@ -76,7 +76,7 @@ function Nav() {
       <div className="mx-auto mt-4 max-w-6xl px-4">
         <div className="glass-strong rounded-2xl flex items-center justify-between px-5 py-3">
           <a href="#top" className="flex items-center gap-2">
-            <img src={logoAsset.url} alt="CyberGuard Agents" className="h-8 w-auto rounded-md" />
+            <img src={logoAsset.url} alt="CyberShield AI — Autonomous Multi-Agent Cyber Defense Platform logo" className="h-8 w-auto rounded-md" />
             <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
           </a>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
@@ -626,10 +626,12 @@ function Footer() {
             <div className="text-xs text-muted-foreground font-mono">HackAgentAIx 2026 · Track 2 Submission</div>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground font-mono">
-          <span>Multi-Agent Collaboration Systems</span>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground font-mono justify-center md:justify-end">
+          <span>Agentic AI · Multi-Agent Systems</span>
           <span className="hidden md:inline">·</span>
-          <span>Built with LangGraph & OpenAI Agents SDK</span>
+          <span>Autonomous Cyber Defense · SOC Automation</span>
+          <span className="hidden md:inline">·</span>
+          <span>Threat Intelligence · Incident Response</span>
           <span className="hidden md:inline">·</span>
           <span>© 2026 CyberShield AI</span>
         </div>

@@ -240,7 +240,7 @@ function InvestigationPage() {
         <div className="mx-auto mt-4 max-w-7xl px-4">
           <div className="glass-strong rounded-2xl flex items-center justify-between px-5 py-3">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoAsset.url} alt="CyberGuard Agents" className="h-8 w-auto rounded-md" />
+              <img src={logoAsset.url} alt="CyberShield AI — Autonomous Multi-Agent Cyber Defense Platform logo" className="h-8 w-auto rounded-md" />
               <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
             </Link>
             <div className="flex items-center gap-4">

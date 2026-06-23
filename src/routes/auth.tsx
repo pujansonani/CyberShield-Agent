@@ -74,7 +74,7 @@ function AuthPage() {
 
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <img src={logoAsset.url} alt="CyberGuard Agents" className="h-9 w-auto rounded-md" />
+          <img src={logoAsset.url} alt="CyberShield AI — Autonomous Multi-Agent Cyber Defense Platform logo" className="h-9 w-auto rounded-md" />
           <span className="font-display font-semibold tracking-tight text-lg">CyberShield AI</span>
         </Link>
 
