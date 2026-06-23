@@ -14,12 +14,16 @@ import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CyberShield AI — Multi-Agent Cyber Defense" },
-      { name: "description", content: "An intelligent network of autonomous cybersecurity agents that collaborate to detect, investigate, and respond to cyber threats in real time." },
-      { property: "og:title", content: "CyberShield AI — Multi-Agent Cyber Defense" },
-      { property: "og:description", content: "Autonomous multi-agent platform that detects, investigates, and responds to cyber threats in real time." },
+      { title: "CyberShield AI | Autonomous Multi-Agent Cyber Defense Platform" },
+      { name: "description", content: "CyberShield AI is an AI-powered multi-agent cybersecurity platform that autonomously detects, investigates, analyzes, and responds to cyber threats using collaborative AI agents, threat intelligence, malware analysis, and automated incident response." },
+      { name: "keywords", content: "AI Cybersecurity, Multi-Agent AI, Agentic AI, Autonomous AI Agents, Cyber Defense Platform, Threat Detection, Threat Intelligence, Malware Analysis, Cyber Incident Response, SOC Automation, Security Operations Center, Cybersecurity Automation, Enterprise Security, AI Security Platform, Real-Time Threat Detection, Autonomous Cyber Defense, Explainable AI" },
+      { name: "robots", content: "index,follow,max-image-preview:large,max-snippet:-1" },
+      { property: "og:title", content: "CyberShield AI – Autonomous Multi-Agent Cyber Defense Platform" },
+      { property: "og:description", content: "A next-generation cybersecurity platform where autonomous AI agents collaborate to detect, investigate, analyze, and respond to cyber threats in real time." },
       { property: "og:url", content: "https://cybershieldagents.live/" },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "CyberShield AI – Agentic Cyber Defense" },
+      { name: "twitter:description", content: "Multi-agent AI cybersecurity platform for autonomous threat detection, threat intelligence, malware analysis, and incident response." },
     ],
     links: [{ rel: "canonical", href: "https://cybershieldagents.live/" }],
     scripts: [
@@ -30,10 +34,35 @@ export const Route = createFileRoute("/")({
           "@type": "SoftwareApplication",
           name: "CyberShield AI",
           applicationCategory: "SecurityApplication",
+          applicationSubCategory: "Multi-Agent Cybersecurity Platform",
           operatingSystem: "Web",
-          description: "Autonomous multi-agent cybersecurity platform that detects, investigates, and responds to threats in real time.",
+          description: "Autonomous multi-agent cybersecurity platform with collaborative AI agents for threat detection, threat intelligence, malware analysis, risk assessment, compliance, and incident response.",
           url: "https://cybershieldagents.live/",
+          featureList: [
+            "Agentic AI threat investigation",
+            "Multi-agent collaboration",
+            "Real-time threat detection",
+            "Threat intelligence enrichment",
+            "Automated malware analysis",
+            "Autonomous incident response",
+            "Explainable AI verdicts",
+            "SOC automation",
+          ],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          publisher: { "@type": "Organization", name: "CyberShield AI", url: "https://cybershieldagents.live" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TechArticle",
+          headline: "Autonomous Multi-Agent Cyber Defense with CyberShield AI",
+          description: "How CyberShield AI orchestrates autonomous AI agents for real-time threat detection, threat intelligence, malware analysis, and incident response inside the modern Security Operations Center.",
+          author: { "@type": "Organization", name: "CyberShield AI" },
+          publisher: { "@type": "Organization", name: "CyberShield AI", url: "https://cybershieldagents.live" },
+          mainEntityOfPage: "https://cybershieldagents.live/",
+          keywords: "Agentic AI, Multi-Agent Systems, Autonomous AI Agents, Cybersecurity Automation, SOC, Threat Intelligence, Incident Response, Malware Analysis, Explainable AI, Real-Time Threat Detection",
         }),
       },
     ],
@@ -47,7 +76,7 @@ function Nav() {
       <div className="mx-auto mt-4 max-w-6xl px-4">
         <div className="glass-strong rounded-2xl flex items-center justify-between px-5 py-3">
           <a href="#top" className="flex items-center gap-2">
-            <img src={logoAsset.url} alt="CyberGuard Agents" className="h-8 w-auto rounded-md" />
+            <img src={logoAsset.url} alt="CyberShield AI — Autonomous Multi-Agent Cyber Defense Platform logo" className="h-8 w-auto rounded-md" />
             <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
           </a>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
@@ -597,10 +626,12 @@ function Footer() {
             <div className="text-xs text-muted-foreground font-mono">HackAgentAIx 2026 · Track 2 Submission</div>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground font-mono">
-          <span>Multi-Agent Collaboration Systems</span>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground font-mono justify-center md:justify-end">
+          <span>Agentic AI · Multi-Agent Systems</span>
           <span className="hidden md:inline">·</span>
-          <span>Built with LangGraph & OpenAI Agents SDK</span>
+          <span>Autonomous Cyber Defense · SOC Automation</span>
+          <span className="hidden md:inline">·</span>
+          <span>Threat Intelligence · Incident Response</span>
           <span className="hidden md:inline">·</span>
           <span>© 2026 CyberShield AI</span>
         </div>

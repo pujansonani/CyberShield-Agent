@@ -16,6 +16,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:description", content: "Access your CyberShield AI investigation history and security reports." },
       { property: "og:url", content: "https://cybershieldagents.live/auth" },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex,follow" },
     ],
     links: [{ rel: "canonical", href: "https://cybershieldagents.live/auth" }],
   }),
@@ -73,7 +74,7 @@ function AuthPage() {
 
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <img src={logoAsset.url} alt="CyberGuard Agents" className="h-9 w-auto rounded-md" />
+          <img src={logoAsset.url} alt="CyberShield AI — Autonomous Multi-Agent Cyber Defense Platform logo" className="h-9 w-auto rounded-md" />
           <span className="font-display font-semibold tracking-tight text-lg">CyberShield AI</span>
         </Link>
 
