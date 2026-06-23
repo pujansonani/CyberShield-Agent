@@ -16,6 +16,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:description", content: "Access your CyberShield AI investigation history and security reports." },
       { property: "og:url", content: "https://cybershieldagents.live/auth" },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex,follow" },
     ],
     links: [{ rel: "canonical", href: "https://cybershieldagents.live/auth" }],
   }),

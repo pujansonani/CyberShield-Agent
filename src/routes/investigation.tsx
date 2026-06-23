@@ -12,14 +12,33 @@ import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 export const Route = createFileRoute("/investigation")({
   head: () => ({
     meta: [
-      { title: "Live Investigation — CyberShield AI" },
-      { name: "description", content: "Watch seven autonomous AI agents collaboratively investigate a suspicious indicator and reach a unified verdict in real time." },
-      { property: "og:title", content: "CyberShield AI — Live Multi-Agent Investigation" },
-      { property: "og:description", content: "Real-time multi-agent threat investigation powered by autonomous AI collaboration." },
+      { title: "Live Multi-Agent Threat Investigation | CyberShield AI" },
+      { name: "description", content: "Run a live autonomous multi-agent cyber investigation. Seven specialist AI agents — threat detection, threat intelligence, malware analysis, risk, compliance, and incident response — collaborate to reach a unified verdict in real time." },
+      { name: "keywords", content: "Agentic AI, Multi-Agent AI, Autonomous Cyber Defense, Threat Detection, Threat Intelligence, Malware Analysis, Incident Response, SOC Automation, Real-Time Threat Detection" },
+      { name: "robots", content: "index,follow,max-image-preview:large" },
+      { property: "og:title", content: "Live Multi-Agent Threat Investigation – CyberShield AI" },
+      { property: "og:description", content: "Watch autonomous AI agents collaborate in real time to detect, investigate, and respond to cyber threats." },
       { property: "og:url", content: "https://cybershieldagents.live/investigation" },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "CyberShield AI – Live Agentic Investigation" },
+      { name: "twitter:description", content: "Autonomous multi-agent AI investigates suspicious indicators and reaches a unified verdict in real time." },
     ],
     links: [{ rel: "canonical", href: "https://cybershieldagents.live/investigation" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TechArticle",
+          headline: "Live Multi-Agent Threat Investigation",
+          description: "Real-time autonomous investigation pipeline where AI agents collaborate on threat detection, threat intelligence, malware analysis, risk assessment, compliance, and incident response.",
+          author: { "@type": "Organization", name: "CyberShield AI" },
+          publisher: { "@type": "Organization", name: "CyberShield AI", url: "https://cybershieldagents.live" },
+          mainEntityOfPage: "https://cybershieldagents.live/investigation",
+          keywords: "Agentic AI, Multi-Agent Systems, Autonomous AI Agents, SOC Automation, Threat Intelligence, Malware Analysis, Incident Response",
+        }),
+      },
+    ],
   }),
   component: InvestigationPage,
 });
