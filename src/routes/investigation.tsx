@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { exportInvestigationPdf } from "@/lib/pdf-report";
-import logoAsset from "@/assets/cyberguard-logo.png.asset.json";
+import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 
 export const Route = createFileRoute("/investigation")({
   head: () => ({
