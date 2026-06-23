@@ -11,8 +11,13 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — CyberShield AI" },
-      { name: "description", content: "Sign in to access your CyberShield AI investigation history and security reports." },
+      { name: "description", content: "Sign in to access your CyberShield AI investigation history and autonomous multi-agent security reports." },
+      { property: "og:title", content: "Sign in — CyberShield AI" },
+      { property: "og:description", content: "Access your CyberShield AI investigation history and security reports." },
+      { property: "og:url", content: "https://cybershieldagents.live/auth" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://cybershieldagents.live/auth" }],
   }),
   component: AuthPage,
 });

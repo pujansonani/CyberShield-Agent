@@ -1,0 +1,10 @@
+# CyberShield AI
+
+> Autonomous multi-agent cybersecurity platform that detects, investigates, and responds to cyber threats in real time through collaborating specialist AI agents.
+
+CyberShield AI orchestrates seven specialist agents (Threat Detection, Threat Intelligence, Malware Analysis, Risk Assessment, Compliance, Incident Response, Reporting) that share context and reach a unified verdict on suspicious indicators — emails, URLs, domains, IPs, and files.
+
+## Pages
+
+- [Home](/): Product overview, architecture, agents, workflow, and live multi-agent collaboration demo.
+- [Live Investigation](/investigation): Submit a suspicious indicator and watch seven autonomous agents investigate in real time.

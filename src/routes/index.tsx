@@ -14,10 +14,28 @@ import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CyberShield AI — Autonomous Multi-Agent Cyber Defense" },
+      { title: "CyberShield AI — Multi-Agent Cyber Defense" },
       { name: "description", content: "An intelligent network of autonomous cybersecurity agents that collaborate to detect, investigate, and respond to cyber threats in real time." },
-      { property: "og:title", content: "CyberShield AI" },
-      { property: "og:description", content: "Autonomous Multi-Agent Cyber Defense Platform — HackAgentAIx 2026" },
+      { property: "og:title", content: "CyberShield AI — Multi-Agent Cyber Defense" },
+      { property: "og:description", content: "Autonomous multi-agent platform that detects, investigates, and responds to cyber threats in real time." },
+      { property: "og:url", content: "https://cybershieldagents.live/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://cybershieldagents.live/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "CyberShield AI",
+          applicationCategory: "SecurityApplication",
+          operatingSystem: "Web",
+          description: "Autonomous multi-agent cybersecurity platform that detects, investigates, and responds to threats in real time.",
+          url: "https://cybershieldagents.live/",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
     ],
   }),
   component: Landing,
@@ -71,8 +89,9 @@ function Hero() {
 
         <h1 className="text-6xl md:text-8xl font-display font-bold tracking-tighter animate-fade-up" style={{ animationDelay: ".1s" }}>
           <span className="text-gradient">CyberShield AI</span>
+          <span className="sr-only"> — Autonomous Multi-Agent Cyber Defense Platform</span>
         </h1>
-        <p className="mt-6 text-xl md:text-2xl font-display text-foreground/90 animate-fade-up" style={{ animationDelay: ".2s" }}>
+        <p className="mt-6 text-xl md:text-2xl font-display text-foreground/90 animate-fade-up" style={{ animationDelay: ".2s" }} aria-hidden="true">
           Autonomous Multi-Agent Cyber Defense Platform
         </p>
         <p className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed animate-fade-up" style={{ animationDelay: ".3s" }}>
