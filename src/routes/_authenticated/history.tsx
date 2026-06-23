@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Shield, ArrowLeft, FileText, Trash2, Download, AlertTriangle, CheckCircle2, Loader2, LogOut, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { exportInvestigationPdf } from "@/lib/pdf-report";
+import logoAsset from "@/assets/cyberguard-logo.png.asset.json";
 
 type Row = {
   id: string;
@@ -67,9 +68,7 @@ function HistoryPage() {
         <div className="mx-auto mt-4 max-w-7xl px-4">
           <div className="glass-strong rounded-2xl flex items-center justify-between px-5 py-3">
             <Link to="/" className="flex items-center gap-2">
-              <div className="size-8 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
-                <Shield className="size-4 text-white" />
-              </div>
+              <img src={logoAsset.url} alt="CyberGuard Agents" className="h-8 w-auto rounded-md" />
               <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
             </Link>
             <div className="flex items-center gap-4">

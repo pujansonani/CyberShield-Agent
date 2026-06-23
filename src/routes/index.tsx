@@ -9,6 +9,7 @@ import {
 import { ParticleField } from "@/components/ParticleField";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { Counter } from "@/components/Counter";
+import logoAsset from "@/assets/cyberguard-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,12 +29,7 @@ function Nav() {
       <div className="mx-auto mt-4 max-w-6xl px-4">
         <div className="glass-strong rounded-2xl flex items-center justify-between px-5 py-3">
           <a href="#top" className="flex items-center gap-2">
-            <div className="relative">
-              <div className="size-8 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
-                <Shield className="size-4 text-white" />
-              </div>
-              <div className="absolute inset-0 rounded-lg blur-md opacity-60" style={{ background: "var(--gradient-primary)" }} />
-            </div>
+            <img src={logoAsset.url} alt="CyberGuard Agents" className="h-8 w-auto rounded-md" />
             <span className="font-display font-semibold tracking-tight">CyberShield AI</span>
           </a>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
