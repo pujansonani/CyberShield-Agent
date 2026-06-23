@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react";
+import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import logoAsset from "@/assets/cyberguard-logo.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -67,9 +68,7 @@ function AuthPage() {
 
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="size-9 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
-            <Shield className="size-5 text-white" />
-          </div>
+          <img src={logoAsset.url} alt="CyberGuard Agents" className="h-9 w-auto rounded-md" />
           <span className="font-display font-semibold tracking-tight text-lg">CyberShield AI</span>
         </Link>
 
