@@ -77,16 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CyberGuard Agents" },
-      { name: "description", content: "CyberGuard Agents is a multi-agent AI cybersecurity platform that automates threat detection, malware analysis, threat intelligence, and cyber incident response" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "CyberGuard Agents" },
-      { property: "og:description", content: "CyberGuard Agents is a multi-agent AI cybersecurity platform that automates threat detection, malware analysis, threat intelligence, and cyber incident response" },
+      { name: "author", content: "CyberShield AI" },
+      { property: "og:site_name", content: "CyberShield AI" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "CyberGuard Agents" },
-      { name: "twitter:description", content: "CyberGuard Agents is a multi-agent AI cybersecurity platform that automates threat detection, malware analysis, threat intelligence, and cyber incident response" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/42ede1eb-14bc-4a7f-82e2-fe48d4e4d2e6/id-preview-1100d42e--920ebb14-9da0-4486-8d1b-36cd1df5e567.lovable.app-1782239616047.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/42ede1eb-14bc-4a7f-82e2-fe48d4e4d2e6/id-preview-1100d42e--920ebb14-9da0-4486-8d1b-36cd1df5e567.lovable.app-1782239616047.png" },
     ],
@@ -94,6 +88,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "CyberShield AI",
+          url: "https://cybershieldagents.live",
+          description: "Autonomous multi-agent cybersecurity platform for real-time threat detection, investigation, and response.",
+        }),
       },
     ],
   }),

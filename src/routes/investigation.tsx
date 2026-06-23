@@ -13,10 +13,13 @@ export const Route = createFileRoute("/investigation")({
   head: () => ({
     meta: [
       { title: "Live Investigation — CyberShield AI" },
-      { name: "description", content: "Watch 7 autonomous AI agents collaboratively investigate a cyber threat in real time." },
+      { name: "description", content: "Watch seven autonomous AI agents collaboratively investigate a suspicious indicator and reach a unified verdict in real time." },
       { property: "og:title", content: "CyberShield AI — Live Multi-Agent Investigation" },
       { property: "og:description", content: "Real-time multi-agent threat investigation powered by autonomous AI collaboration." },
+      { property: "og:url", content: "https://cybershieldagents.live/investigation" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://cybershieldagents.live/investigation" }],
   }),
   component: InvestigationPage,
 });
@@ -307,6 +310,7 @@ function InvestigationPage() {
         <div className="grid lg:grid-cols-[1fr_400px] gap-6">
           {/* Agent grid */}
           <div className="space-y-4">
+            <h2 className="text-lg font-display font-semibold tracking-tight text-foreground/90">Agent Network</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {agents.map((a) => {
                 const Icon = AGENT_ICONS[a.id] ?? Brain;

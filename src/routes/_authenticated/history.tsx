@@ -23,8 +23,14 @@ export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({
     meta: [
       { title: "Investigation History — CyberShield AI" },
-      { name: "description", content: "Your past autonomous multi-agent threat investigations and forensic reports." },
+      { name: "description", content: "Review your past autonomous multi-agent threat investigations, verdicts, and downloadable forensic reports." },
+      { property: "og:title", content: "Investigation History — CyberShield AI" },
+      { property: "og:description", content: "Past autonomous multi-agent threat investigations and forensic reports." },
+      { property: "og:url", content: "https://cybershieldagents.live/history" },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex,follow" },
     ],
+    links: [{ rel: "canonical", href: "https://cybershieldagents.live/history" }],
   }),
   component: HistoryPage,
 });
