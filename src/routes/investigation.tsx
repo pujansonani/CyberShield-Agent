@@ -301,7 +301,7 @@ function InvestigationPage() {
             {(["email", "url", "domain", "ip", "file"] as Kind[]).map((k) => (
               <button
                 key={k}
-                onClick={() => { setKind(k); setIndicator(SAMPLES[k]); }}
+                onClick={() => { setKind(k); setIndicator(SAMPLES[k]); setArtifact(null); }}
                 disabled={running}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition ${
                   kind === k ? "text-foreground" : "text-muted-foreground hover:text-foreground"
@@ -311,23 +311,34 @@ function InvestigationPage() {
                 {k}
               </button>
             ))}
-            <button
-              onClick={() => setIndicator(SAMPLES[kind])}
-              disabled={running}
-              className="ml-auto text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-            >
-              <Sparkles className="size-3" /> Load sample
-            </button>
+            {kind !== "file" && (
+              <button
+                onClick={() => setIndicator(SAMPLES[kind])}
+                disabled={running}
+                className="ml-auto text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              >
+                <Sparkles className="size-3" /> Load sample
+              </button>
+            )}
           </div>
 
-          <textarea
-            value={indicator}
-            onChange={(e) => setIndicator(e.target.value)}
-            disabled={running}
-            rows={kind === "email" ? 5 : 2}
-            placeholder="Paste suspicious content here..."
-            className="w-full resize-none bg-black/30 border border-white/5 rounded-xl p-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
-          />
+          {kind === "file" ? (
+            <FileDropzone
+              file={artifact}
+              onFile={setArtifact}
+              onClear={() => setArtifact(null)}
+              disabled={running}
+            />
+          ) : (
+            <textarea
+              value={indicator}
+              onChange={(e) => setIndicator(e.target.value)}
+              disabled={running}
+              rows={kind === "email" ? 5 : 2}
+              placeholder="Paste suspicious content here..."
+              className="w-full resize-none bg-black/30 border border-white/5 rounded-xl p-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
+            />
+          )}
 
           <div className="mt-3 flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
