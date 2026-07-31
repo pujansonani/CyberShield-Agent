@@ -349,7 +349,10 @@ function InvestigationPage() {
                 <Loader2 className="size-4 animate-spin" /> Stop investigation
               </button>
             ) : (
-              <button onClick={start} className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium"
+              <button
+                onClick={start}
+                disabled={kind === "file" && !artifact}
+                className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ background: "var(--gradient-primary)", color: "white", boxShadow: "var(--shadow-glow)" }}>
                 <Send className="size-4" /> Launch investigation
               </button>
