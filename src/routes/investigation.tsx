@@ -56,6 +56,9 @@ type AgentState = {
   status: "pending" | "running" | "done" | "error";
   findings?: Record<string, unknown>;
   error?: string;
+  steps: string[];
+  startedAt?: number;
+  endedAt?: number;
 };
 
 type LogEntry =
