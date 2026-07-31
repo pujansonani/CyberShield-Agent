@@ -45,6 +45,10 @@ const AGENTS: AgentDef[] = [
   "known_threat_actor": string,    // or "Unknown"
   "ttp_overlap": [string],         // up to 5 MITRE ATT&CK TTPs
   "sources_cited": [string],       // e.g. ["VirusTotal","AbuseIPDB","WHOIS"]
+  "virustotal": { "status": "safe"|"suspicious"|"malicious", "reputation_score": number, "detection_ratio": string },
+  "abuseipdb": { "confidence_score": number, "blacklisted": boolean, "reported_activity": string },
+  "whois": { "domain_age": string, "registrar": string, "country": string, "registration_date": string },
+  "ssl": { "status": string, "issuer": string, "expiration_date": string },
   "reasoning": string
 }`,
   },
