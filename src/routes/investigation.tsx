@@ -151,7 +151,7 @@ function InvestigationPage() {
     }
     const payload = {
       user_id: u.user.id,
-      indicator,
+      indicator: submission(),
       kind,
       verdict: String(verdictData.verdict ?? "unknown"),
       severity: String(verdictData.severity ?? (agentFindings.risk ? (agentFindings.risk as Record<string, unknown>).final_severity : undefined) ?? "info"),
@@ -166,7 +166,8 @@ function InvestigationPage() {
   }
 
   async function start() {
-    if (running || !indicator.trim()) return;
+    const text = submission();
+    if (running || !text.trim()) return;
     reset();
     setRunning(true);
     startTimeRef.current = Date.now();
@@ -177,7 +178,7 @@ function InvestigationPage() {
       const res = await fetch("/api/investigate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ indicator, kind }),
+        body: JSON.stringify({ indicator: text, kind }),
         signal: ac.signal,
       });
 
