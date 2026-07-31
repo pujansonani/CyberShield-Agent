@@ -116,6 +116,15 @@ const AGENTS: AgentDef[] = [
   },
 ];
 
+const AGENT_STEPS: Record<string, string[]> = {
+  detection: ["Parsing submitted artifact", "Extracting headers, URLs and IoCs", "Scoring phishing & anomaly patterns"],
+  intel: ["Querying VirusTotal reputation", "Checking AbuseIPDB reports", "Resolving WHOIS & SSL records"],
+  malware: ["Hypothesising payload family", "Mapping behavioural indicators", "Correlating MITRE ATT&CK techniques"],
+  risk: ["Reconciling agent findings", "Weighting confidence & blast radius", "Computing unified threat score"],
+  compliance: ["Mapping GDPR obligations", "Checking ISO 27001 / NIST CSF controls", "Evaluating notification duties"],
+  report: ["Aggregating evidence chain", "Drafting executive summary", "Prioritising remediation steps"],
+};
+
 function sse(controller: ReadableStreamDefaultController, event: object) {
   controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`));
 }
