@@ -506,6 +506,7 @@ function InvestigationPage() {
               )}
               {log.map((l, i) => <LogLine key={i} entry={l} />)}
             </div>
+            </div>
           </div>
         </div>
       </main>
