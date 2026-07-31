@@ -226,12 +226,16 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "orchestrator", text: String(ev.message), ts }]);
     } else if (ev.type === "agent_started") {
       const id = String(ev.agentId);
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "running" } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "running", steps: [], startedAt: ts } : a)));
       setLog((l) => [...l, { kind: "started", agentId: id, name: String(ev.name), ts }]);
+    } else if (ev.type === "agent_step") {
+      const id = String(ev.agentId);
+      const step = String(ev.step);
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, steps: [...a.steps, step] } : a)));
     } else if (ev.type === "agent_completed") {
       const id = String(ev.agentId);
       const findings = ev.findings as Record<string, unknown>;
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "done", findings } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "done", findings, endedAt: ts } : a)));
       setLog((l) => [...l, { kind: "completed", agentId: id, name: String(ev.name), ts }]);
       if (id === "report") {
         setVerdict(findings);
@@ -243,7 +247,7 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "message", from: String(ev.from), to: String(ev.to), text: String(ev.text), ts }]);
     } else if (ev.type === "agent_error") {
       const id = String(ev.agentId);
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "error", error: String(ev.message) } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "error", error: String(ev.message), endedAt: ts } : a)));
       setLog((l) => [...l, { kind: "error", text: `${id}: ${String(ev.message)}`, ts }]);
     } else if (ev.type === "error") {
       setLog((l) => [...l, { kind: "error", text: String(ev.message), ts }]);
