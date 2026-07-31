@@ -413,6 +413,13 @@ function InvestigationPage() {
               })}
             </div>
 
+            {/* Evidence & citations */}
+            <EvidencePanel
+              intel={agents.find((a) => a.id === "intel")?.findings}
+              malware={agents.find((a) => a.id === "malware")?.findings}
+              compliance={agents.find((a) => a.id === "compliance")?.findings}
+            />
+
             {/* Verdict */}
             {verdict && (
               <div className="glass-strong rounded-2xl p-6 relative overflow-hidden">
