@@ -155,6 +155,12 @@ async function runInvestigation(body: Body, controller: ReadableStreamDefaultCon
       color: agent.color,
     });
 
+    for (const step of AGENT_STEPS[agent.id] ?? []) {
+      sse(controller, { type: "agent_step", agentId: agent.id, step });
+    }
+
+
+
     const priorContext =
       Object.keys(findings).length > 0
         ? `\n\nPrior agent findings (collaborate; do not contradict without justification):\n${JSON.stringify(findings, null, 2)}`
