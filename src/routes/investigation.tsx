@@ -490,8 +490,11 @@ function InvestigationPage() {
             )}
           </div>
 
-          {/* Live log */}
-          <div className="glass rounded-2xl p-4 h-fit lg:sticky lg:top-24">
+          {/* Timeline + live log */}
+          <div className="space-y-4 h-fit lg:sticky lg:top-24">
+            <InvestigationTimeline agents={agents} />
+
+            <div className="glass rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3 px-1">
               <Brain className="size-4 text-cyan-300" />
               <h3 className="font-display font-semibold text-sm">Agent Communication</h3>
