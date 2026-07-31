@@ -113,6 +113,7 @@ function InvestigationPage() {
   const [verdict, setVerdict] = useState<Record<string, unknown> | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   const [saved, setSaved] = useState<{ id: string } | null>(null);
+  const [artifact, setArtifact] = useState<UploadedArtifact | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
   const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
@@ -126,8 +127,16 @@ function InvestigationPage() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  function submission() {
+    if (kind === "file" && artifact) {
+      const head = `filename: ${artifact.name}\nsize: ${humanSize(artifact.size)}\nmime: ${artifact.type}\nsha256: ${artifact.sha256}`;
+      return artifact.preview ? `${head}\n\n--- extracted content (truncated) ---\n${artifact.preview.slice(0, 4000)}` : head;
+    }
+    return indicator;
+  }
+
   function reset() {
-    setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined })));
+    setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined, steps: [], startedAt: undefined, endedAt: undefined })));
     setLog([]);
     setVerdict(null);
     setSaved(null);
