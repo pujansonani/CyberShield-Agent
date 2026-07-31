@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { exportInvestigationPdf } from "@/lib/pdf-report";
+import { InvestigationTimeline } from "@/components/InvestigationTimeline";
+import { EvidencePanel, ConfidenceMeter } from "@/components/EvidencePanel";
+import { FileDropzone, humanSize, type UploadedArtifact } from "@/components/FileDropzone";
 import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 
 export const Route = createFileRoute("/investigation")({
@@ -53,6 +56,9 @@ type AgentState = {
   status: "pending" | "running" | "done" | "error";
   findings?: Record<string, unknown>;
   error?: string;
+  steps: string[];
+  startedAt?: number;
+  endedAt?: number;
 };
 
 type LogEntry =
@@ -82,12 +88,12 @@ const COLOR_MAP: Record<string, { bg: string; text: string; ring: string }> = {
 };
 
 const INITIAL_AGENTS: AgentState[] = [
-  { id: "detection",  name: "Threat Detection",    role: "Surface IoCs & patterns",      color: "cyan",    status: "pending" },
-  { id: "intel",      name: "Threat Intelligence", role: "Reputation & external intel",  color: "violet",  status: "pending" },
-  { id: "malware",    name: "Malware Analysis",    role: "Payload & behavior",           color: "rose",    status: "pending" },
-  { id: "risk",       name: "Risk Assessment",     role: "Aggregate severity & impact",  color: "amber",   status: "pending" },
-  { id: "compliance", name: "Compliance",          role: "GDPR / ISO / NIST / SOC2",     color: "emerald", status: "pending" },
-  { id: "report",     name: "Report Generation",   role: "Executive synthesis",          color: "sky",     status: "pending" },
+  { id: "detection",  name: "Threat Detection Agent",    role: "Surface IoCs & patterns",      color: "cyan",    status: "pending", steps: [] },
+  { id: "intel",      name: "Threat Intelligence Agent", role: "Reputation & external intel",  color: "violet",  status: "pending", steps: [] },
+  { id: "malware",    name: "Malware Analysis Agent",    role: "Payload & behavior",           color: "rose",    status: "pending", steps: [] },
+  { id: "risk",       name: "Risk & Response Agent",     role: "Aggregate severity & impact",  color: "amber",   status: "pending", steps: [] },
+  { id: "compliance", name: "Compliance Agent",          role: "GDPR / ISO / NIST / SOC2",     color: "emerald", status: "pending", steps: [] },
+  { id: "report",     name: "Report Generation Agent",   role: "Executive synthesis",          color: "sky",     status: "pending", steps: [] },
 ];
 
 const SAMPLES: Record<Kind, string> = {
@@ -107,6 +113,7 @@ function InvestigationPage() {
   const [verdict, setVerdict] = useState<Record<string, unknown> | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   const [saved, setSaved] = useState<{ id: string } | null>(null);
+  const [artifact, setArtifact] = useState<UploadedArtifact | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
   const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
@@ -120,8 +127,16 @@ function InvestigationPage() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  function submission() {
+    if (kind === "file" && artifact) {
+      const head = `filename: ${artifact.name}\nsize: ${humanSize(artifact.size)}\nmime: ${artifact.type}\nsha256: ${artifact.sha256}`;
+      return artifact.preview ? `${head}\n\n--- extracted content (truncated) ---\n${artifact.preview.slice(0, 4000)}` : head;
+    }
+    return indicator;
+  }
+
   function reset() {
-    setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined })));
+    setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined, steps: [], startedAt: undefined, endedAt: undefined })));
     setLog([]);
     setVerdict(null);
     setSaved(null);
@@ -136,7 +151,7 @@ function InvestigationPage() {
     }
     const payload = {
       user_id: u.user.id,
-      indicator,
+      indicator: submission(),
       kind,
       verdict: String(verdictData.verdict ?? "unknown"),
       severity: String(verdictData.severity ?? (agentFindings.risk ? (agentFindings.risk as Record<string, unknown>).final_severity : undefined) ?? "info"),
@@ -151,7 +166,8 @@ function InvestigationPage() {
   }
 
   async function start() {
-    if (running || !indicator.trim()) return;
+    const text = submission();
+    if (running || !text.trim()) return;
     reset();
     setRunning(true);
     startTimeRef.current = Date.now();
@@ -162,7 +178,7 @@ function InvestigationPage() {
       const res = await fetch("/api/investigate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ indicator, kind }),
+        body: JSON.stringify({ indicator: text, kind }),
         signal: ac.signal,
       });
 
@@ -210,12 +226,16 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "orchestrator", text: String(ev.message), ts }]);
     } else if (ev.type === "agent_started") {
       const id = String(ev.agentId);
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "running" } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "running", steps: [], startedAt: ts } : a)));
       setLog((l) => [...l, { kind: "started", agentId: id, name: String(ev.name), ts }]);
+    } else if (ev.type === "agent_step") {
+      const id = String(ev.agentId);
+      const step = String(ev.step);
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, steps: [...a.steps, step] } : a)));
     } else if (ev.type === "agent_completed") {
       const id = String(ev.agentId);
       const findings = ev.findings as Record<string, unknown>;
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "done", findings } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "done", findings, endedAt: ts } : a)));
       setLog((l) => [...l, { kind: "completed", agentId: id, name: String(ev.name), ts }]);
       if (id === "report") {
         setVerdict(findings);
@@ -227,7 +247,7 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "message", from: String(ev.from), to: String(ev.to), text: String(ev.text), ts }]);
     } else if (ev.type === "agent_error") {
       const id = String(ev.agentId);
-      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "error", error: String(ev.message) } : a)));
+      setAgents((prev) => prev.map((a) => (a.id === id ? { ...a, status: "error", error: String(ev.message), endedAt: ts } : a)));
       setLog((l) => [...l, { kind: "error", text: `${id}: ${String(ev.message)}`, ts }]);
     } else if (ev.type === "error") {
       setLog((l) => [...l, { kind: "error", text: String(ev.message), ts }]);
@@ -281,7 +301,7 @@ function InvestigationPage() {
             {(["email", "url", "domain", "ip", "file"] as Kind[]).map((k) => (
               <button
                 key={k}
-                onClick={() => { setKind(k); setIndicator(SAMPLES[k]); }}
+                onClick={() => { setKind(k); setIndicator(SAMPLES[k]); setArtifact(null); }}
                 disabled={running}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono uppercase tracking-wider transition ${
                   kind === k ? "text-foreground" : "text-muted-foreground hover:text-foreground"
@@ -291,23 +311,34 @@ function InvestigationPage() {
                 {k}
               </button>
             ))}
-            <button
-              onClick={() => setIndicator(SAMPLES[kind])}
-              disabled={running}
-              className="ml-auto text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-            >
-              <Sparkles className="size-3" /> Load sample
-            </button>
+            {kind !== "file" && (
+              <button
+                onClick={() => setIndicator(SAMPLES[kind])}
+                disabled={running}
+                className="ml-auto text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              >
+                <Sparkles className="size-3" /> Load sample
+              </button>
+            )}
           </div>
 
-          <textarea
-            value={indicator}
-            onChange={(e) => setIndicator(e.target.value)}
-            disabled={running}
-            rows={kind === "email" ? 5 : 2}
-            placeholder="Paste suspicious content here..."
-            className="w-full resize-none bg-black/30 border border-white/5 rounded-xl p-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
-          />
+          {kind === "file" ? (
+            <FileDropzone
+              file={artifact}
+              onFile={setArtifact}
+              onClear={() => setArtifact(null)}
+              disabled={running}
+            />
+          ) : (
+            <textarea
+              value={indicator}
+              onChange={(e) => setIndicator(e.target.value)}
+              disabled={running}
+              rows={kind === "email" ? 5 : 2}
+              placeholder="Paste suspicious content here..."
+              className="w-full resize-none bg-black/30 border border-white/5 rounded-xl p-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
+            />
+          )}
 
           <div className="mt-3 flex items-center justify-between">
             <p className="text-xs text-muted-foreground">
@@ -318,7 +349,10 @@ function InvestigationPage() {
                 <Loader2 className="size-4 animate-spin" /> Stop investigation
               </button>
             ) : (
-              <button onClick={start} className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium"
+              <button
+                onClick={start}
+                disabled={kind === "file" && !artifact}
+                className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ background: "var(--gradient-primary)", color: "white", boxShadow: "var(--shadow-glow)" }}>
                 <Send className="size-4" /> Launch investigation
               </button>
@@ -379,6 +413,13 @@ function InvestigationPage() {
               })}
             </div>
 
+            {/* Evidence & citations */}
+            <EvidencePanel
+              intel={agents.find((a) => a.id === "intel")?.findings}
+              malware={agents.find((a) => a.id === "malware")?.findings}
+              compliance={agents.find((a) => a.id === "compliance")?.findings}
+            />
+
             {/* Verdict */}
             {verdict && (
               <div className="glass-strong rounded-2xl p-6 relative overflow-hidden">
@@ -414,6 +455,12 @@ function InvestigationPage() {
                   )}
                   <p className="text-sm text-foreground/90 leading-relaxed">{String(verdict.executive_summary ?? "")}</p>
 
+                  <div className="mt-4">
+                    <ConfidenceMeter value={Number(verdict.confidence ?? 0.7)} verdict={String(verdict.verdict ?? "")} />
+                  </div>
+
+
+
                   {Array.isArray(verdict.ioc_list) && verdict.ioc_list.length > 0 && (
                     <div className="mt-4">
                       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">IoCs</p>
@@ -443,8 +490,11 @@ function InvestigationPage() {
             )}
           </div>
 
-          {/* Live log */}
-          <div className="glass rounded-2xl p-4 h-fit lg:sticky lg:top-24">
+          {/* Timeline + live log */}
+          <div className="space-y-4 h-fit lg:sticky lg:top-24">
+            <InvestigationTimeline agents={agents} />
+
+            <div className="glass rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3 px-1">
               <Brain className="size-4 text-cyan-300" />
               <h3 className="font-display font-semibold text-sm">Agent Communication</h3>
@@ -455,6 +505,7 @@ function InvestigationPage() {
                 <p className="text-xs text-muted-foreground italic px-1">Awaiting investigation...</p>
               )}
               {log.map((l, i) => <LogLine key={i} entry={l} />)}
+            </div>
             </div>
           </div>
         </div>

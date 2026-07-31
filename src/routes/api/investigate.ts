@@ -45,6 +45,10 @@ const AGENTS: AgentDef[] = [
   "known_threat_actor": string,    // or "Unknown"
   "ttp_overlap": [string],         // up to 5 MITRE ATT&CK TTPs
   "sources_cited": [string],       // e.g. ["VirusTotal","AbuseIPDB","WHOIS"]
+  "virustotal": { "status": "safe"|"suspicious"|"malicious", "reputation_score": number, "detection_ratio": string },
+  "abuseipdb": { "confidence_score": number, "blacklisted": boolean, "reported_activity": string },
+  "whois": { "domain_age": string, "registrar": string, "country": string, "registration_date": string },
+  "ssl": { "status": string, "issuer": string, "expiration_date": string },
   "reasoning": string
 }`,
   },
@@ -112,6 +116,15 @@ const AGENTS: AgentDef[] = [
   },
 ];
 
+const AGENT_STEPS: Record<string, string[]> = {
+  detection: ["Parsing submitted artifact", "Extracting headers, URLs and IoCs", "Scoring phishing & anomaly patterns"],
+  intel: ["Querying VirusTotal reputation", "Checking AbuseIPDB reports", "Resolving WHOIS & SSL records"],
+  malware: ["Hypothesising payload family", "Mapping behavioural indicators", "Correlating MITRE ATT&CK techniques"],
+  risk: ["Reconciling agent findings", "Weighting confidence & blast radius", "Computing unified threat score"],
+  compliance: ["Mapping GDPR obligations", "Checking ISO 27001 / NIST CSF controls", "Evaluating notification duties"],
+  report: ["Aggregating evidence chain", "Drafting executive summary", "Prioritising remediation steps"],
+};
+
 function sse(controller: ReadableStreamDefaultController, event: object) {
   controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`));
 }
@@ -150,6 +163,12 @@ async function runInvestigation(body: Body, controller: ReadableStreamDefaultCon
       role: agent.role,
       color: agent.color,
     });
+
+    for (const step of AGENT_STEPS[agent.id] ?? []) {
+      sse(controller, { type: "agent_step", agentId: agent.id, step });
+    }
+
+
 
     const priorContext =
       Object.keys(findings).length > 0
