@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { exportInvestigationPdf } from "@/lib/pdf-report";
+import { InvestigationTimeline } from "@/components/InvestigationTimeline";
+import { EvidencePanel, ConfidenceMeter } from "@/components/EvidencePanel";
+import { FileDropzone, humanSize, type UploadedArtifact } from "@/components/FileDropzone";
 import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 
 export const Route = createFileRoute("/investigation")({
