@@ -455,6 +455,12 @@ function InvestigationPage() {
                   )}
                   <p className="text-sm text-foreground/90 leading-relaxed">{String(verdict.executive_summary ?? "")}</p>
 
+                  <div className="mt-4">
+                    <ConfidenceMeter value={Number(verdict.confidence ?? 0.7)} verdict={String(verdict.verdict ?? "")} />
+                  </div>
+
+
+
                   {Array.isArray(verdict.ioc_list) && verdict.ioc_list.length > 0 && (
                     <div className="mt-4">
                       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-1.5">IoCs</p>
