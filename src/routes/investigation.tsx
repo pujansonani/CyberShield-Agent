@@ -88,12 +88,12 @@ const COLOR_MAP: Record<string, { bg: string; text: string; ring: string }> = {
 };
 
 const INITIAL_AGENTS: AgentState[] = [
-  { id: "detection",  name: "Threat Detection",    role: "Surface IoCs & patterns",      color: "cyan",    status: "pending" },
-  { id: "intel",      name: "Threat Intelligence", role: "Reputation & external intel",  color: "violet",  status: "pending" },
-  { id: "malware",    name: "Malware Analysis",    role: "Payload & behavior",           color: "rose",    status: "pending" },
-  { id: "risk",       name: "Risk Assessment",     role: "Aggregate severity & impact",  color: "amber",   status: "pending" },
-  { id: "compliance", name: "Compliance",          role: "GDPR / ISO / NIST / SOC2",     color: "emerald", status: "pending" },
-  { id: "report",     name: "Report Generation",   role: "Executive synthesis",          color: "sky",     status: "pending" },
+  { id: "detection",  name: "Threat Detection Agent",    role: "Surface IoCs & patterns",      color: "cyan",    status: "pending", steps: [] },
+  { id: "intel",      name: "Threat Intelligence Agent", role: "Reputation & external intel",  color: "violet",  status: "pending", steps: [] },
+  { id: "malware",    name: "Malware Analysis Agent",    role: "Payload & behavior",           color: "rose",    status: "pending", steps: [] },
+  { id: "risk",       name: "Risk & Response Agent",     role: "Aggregate severity & impact",  color: "amber",   status: "pending", steps: [] },
+  { id: "compliance", name: "Compliance Agent",          role: "GDPR / ISO / NIST / SOC2",     color: "emerald", status: "pending", steps: [] },
+  { id: "report",     name: "Report Generation Agent",   role: "Executive synthesis",          color: "sky",     status: "pending", steps: [] },
 ];
 
 const SAMPLES: Record<Kind, string> = {
