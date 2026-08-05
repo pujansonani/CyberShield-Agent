@@ -116,6 +116,7 @@ function InvestigationPage() {
   const [signedIn, setSignedIn] = useState(false);
   const [saved, setSaved] = useState<{ id: string } | null>(null);
   const [artifact, setArtifact] = useState<UploadedArtifact | null>(null);
+  const [finishedAt, setFinishedAt] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
   const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
