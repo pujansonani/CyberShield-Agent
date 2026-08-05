@@ -490,6 +490,14 @@ function InvestigationPage() {
                 </div>
               </div>
             )}
+
+            {/* AI Insights & Sustainability */}
+            {verdict && (
+              <SustainabilityDashboard
+                agents={agents}
+                durationMs={(finishedAt || Date.now()) - startTimeRef.current}
+              />
+            )}
           </div>
 
           {/* Timeline + live log */}
