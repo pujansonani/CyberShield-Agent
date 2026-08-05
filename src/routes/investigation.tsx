@@ -241,6 +241,7 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "completed", agentId: id, name: String(ev.name), ts }]);
       if (id === "report") {
         setVerdict(findings);
+        setFinishedAt(ts);
         setLog((l) => [...l, { kind: "verdict", text: String((findings.executive_summary as string) ?? ""), ts }]);
         // Persist for signed-in analysts (RLS scopes to their user_id)
         void persistInvestigation(findings);
