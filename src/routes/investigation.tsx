@@ -494,6 +494,12 @@ function InvestigationPage() {
 
           {/* Timeline + live log */}
           <div className="space-y-4 h-fit lg:sticky lg:top-24">
+            <LiveAiObservatory
+              agents={agents}
+              running={running}
+              startedAt={startTimeRef.current}
+              agentNames={Object.fromEntries(agents.map((a) => [a.id, a.name]))}
+            />
             <InvestigationTimeline agents={agents} />
 
             <div className="glass rounded-2xl p-4">
