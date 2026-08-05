@@ -141,6 +141,7 @@ function InvestigationPage() {
     setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined, steps: [], startedAt: undefined, endedAt: undefined })));
     setLog([]);
     setVerdict(null);
+    setFinishedAt(0);
     setSaved(null);
   }
 
