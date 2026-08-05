@@ -10,6 +10,8 @@ import { exportInvestigationPdf } from "@/lib/pdf-report";
 import { InvestigationTimeline } from "@/components/InvestigationTimeline";
 import { EvidencePanel, ConfidenceMeter } from "@/components/EvidencePanel";
 import { FileDropzone, humanSize, type UploadedArtifact } from "@/components/FileDropzone";
+import { LiveAiObservatory } from "@/components/LiveAiObservatory";
+import { SustainabilityDashboard } from "@/components/SustainabilityDashboard";
 import logoAsset from "@/assets/cyberguard-logo-final.png.asset.json";
 
 export const Route = createFileRoute("/investigation")({
@@ -114,6 +116,7 @@ function InvestigationPage() {
   const [signedIn, setSignedIn] = useState(false);
   const [saved, setSaved] = useState<{ id: string } | null>(null);
   const [artifact, setArtifact] = useState<UploadedArtifact | null>(null);
+  const [finishedAt, setFinishedAt] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
   const agentsRef = useRef<AgentState[]>(INITIAL_AGENTS);
@@ -139,6 +142,7 @@ function InvestigationPage() {
     setAgents(INITIAL_AGENTS.map((a) => ({ ...a, status: "pending", findings: undefined, error: undefined, steps: [], startedAt: undefined, endedAt: undefined })));
     setLog([]);
     setVerdict(null);
+    setFinishedAt(0);
     setSaved(null);
   }
 
@@ -239,6 +243,7 @@ function InvestigationPage() {
       setLog((l) => [...l, { kind: "completed", agentId: id, name: String(ev.name), ts }]);
       if (id === "report") {
         setVerdict(findings);
+        setFinishedAt(ts);
         setLog((l) => [...l, { kind: "verdict", text: String((findings.executive_summary as string) ?? ""), ts }]);
         // Persist for signed-in analysts (RLS scopes to their user_id)
         void persistInvestigation(findings);
@@ -488,10 +493,24 @@ function InvestigationPage() {
                 </div>
               </div>
             )}
+
+            {/* AI Insights & Sustainability */}
+            {verdict && (
+              <SustainabilityDashboard
+                agents={agents}
+                durationMs={(finishedAt || Date.now()) - startTimeRef.current}
+              />
+            )}
           </div>
 
           {/* Timeline + live log */}
           <div className="space-y-4 h-fit lg:sticky lg:top-24">
+            <LiveAiObservatory
+              agents={agents}
+              running={running}
+              startedAt={startTimeRef.current}
+              agentNames={Object.fromEntries(agents.map((a) => [a.id, a.name]))}
+            />
             <InvestigationTimeline agents={agents} />
 
             <div className="glass rounded-2xl p-4">
